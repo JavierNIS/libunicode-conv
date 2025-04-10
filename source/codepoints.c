@@ -77,7 +77,7 @@ const cpRange_t TIP_PLANE[] = {
   //The rest of code points are not allocated
 };
 
-//Plane 4 to D havo no code points allocated
+//Plane 4 to D have no code points allocated
 
 //Plane E (Supplementary Special-purpose Plane)
 const cpRange_t SSP_PLANE[] = {

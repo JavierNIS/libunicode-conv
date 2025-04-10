@@ -26,7 +26,7 @@ extern const cpRange_t SIP_PLANE[];
 //Plane 3 (Tertiary Ideographic Plane)
 extern const cpRange_t TIP_PLANE[];
 
-//Plane 4 to D havo no code points allocated
+//Plane 4 to D have no code points allocated
 
 //Plane E (Supplementary Special-purpose Plane)
 extern const cpRange_t SSP_PLANE[];
