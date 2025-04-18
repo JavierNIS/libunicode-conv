@@ -2,7 +2,6 @@
 #define _MBSTATE_
 #include <stdint.h> //for least types
 
-
 #ifndef UTF8_CHAR
 #define UTF8_CHAR
 typedef uint_least8_t charUTF8_t; //utf8 char
@@ -25,7 +24,7 @@ typedef uint_least32_t charUTF32_t; //utf32 char
 typedef uint_least32_t widechar_t; //OS based char type
 #endif /*__linux__*/
 
-#ifdef _WIN32
+#ifdef _WINDOWS_
 typedef uint_least16_t widechar_t;
 #endif /*_WIN32*/
 #endif /*WIDE_CHAR*/

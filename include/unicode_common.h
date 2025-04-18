@@ -1,6 +1,7 @@
 #ifndef UNICODE_COMMON
 #define UNICODE_COMMON
 
+#include "platform_integration.h"
 #include "mbstate.h"
 #include "codepoints.h"
 

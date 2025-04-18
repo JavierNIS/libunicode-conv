@@ -68,9 +68,9 @@ UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, conversionInfo_t* conver
   return u16_cp_length;
 }
 
-#ifdef _WIN32
+#ifdef _WINDOWS_
 mbsize_t 
-UTF32toWIDE(const charUTF32_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t& max){
+UTF32toWIDE(const charUTF32_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max){
   return (UTF32toUTF16(src, dest, conver, max));
 }
-#endif /*_WIN32*/
+#endif /*_WINDOWS_*/

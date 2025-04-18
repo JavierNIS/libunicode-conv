@@ -24,7 +24,7 @@ all: obj $(TEST_NAMES)
 obj:
 	@mkdir -p $(OBJ_DIR)
 #Link it all together
-$(TEST_NAMES): %: $(OBJ_DIR)%.o $(SRC_OBJECTS) $(HEADERS)
+$(TEST_NAMES): %: $(OBJ_DIR)%.o $(SRC_OBJECTS)
 	$(COMP) $(CXXFLAGS) -o $@ $^
 #Compile source code into objects
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADERS)

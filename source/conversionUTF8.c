@@ -56,14 +56,6 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, 
 
       dest[0] = (UTF16_MASK_HIGH_SURROGATE | ((code_point >> 10)));
       dest[1] = (UTF16_MASK_LOW_SURROGATE | ((code_point & TEN_LOWER_BITS)));
-      /*dest[0] = ( UTF16_MASK_HIGH_SURROGATE | 
-          (src[2] & 0x30) >> 4 | 
-          ((src[1] -0x10) & SIX_LOWER_BITS) << 2 | 
-          (src[0] & THREE_LOWER_BITS) << 7);
-      dest[1] = ( UTF16_MASK_LOW_SURROGATE | 
-          (src[3] & SIX_LOWER_BITS) | 
-          (src[2] & FOUR_LOWER_BITS) << 6);*/
-
       if(conver->_endianness == LITTLE_ENDIAN)
         SwapEndiannessU16(dest);
       break;
@@ -73,7 +65,6 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//TESTED
 mbsize_t 
 UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max){
   if(dest == 0 || conver == 0 || 
@@ -115,7 +106,7 @@ UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, 
 
 mbsize_t 
 UTF8toWIDE(const charUTF8_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max){
-#ifdef _WIN32
+#ifdef _WINDOWS_
   return UTF8toUTF16(src, dest, conver, max);
 #elif defined __linux__
   return UTF8toUTF32(src, dest, conver, max);
