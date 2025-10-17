@@ -25,8 +25,6 @@
 
 mbsize_t 
 UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  if(dest == 0 || conver == 0)
-    return 0;
   mbsize_t u8_cp_size = CharLength(src, conver);
   if (u8_cp_size > max)
     u8_cp_size = 0;
@@ -56,7 +54,7 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, 
 
       dest[0] = (UTF16_MASK_HIGH_SURROGATE | ((code_point >> 10)));
       dest[1] = (UTF16_MASK_LOW_SURROGATE | ((code_point & TEN_LOWER_BITS)));
-      if(conver->_endianness == LITTLE_ENDIAN)
+      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
         SwapEndiannessU16(dest);
       break;
   }
@@ -67,9 +65,6 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, 
 
 mbsize_t 
 UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  if(dest == 0 || conver == 0 || 
-      conver->_state == BAD)
-    return 0;
   mbsize_t u8_cp_size = CharLength(src, conver);
   if(u8_cp_size > max)
     u8_cp_size = 0;
@@ -98,7 +93,7 @@ UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, 
       break;
   }
 
-  if(conver->_endianness == LITTLE_ENDIAN)
+  if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
     SwapEndiannessU32(dest);
   return u8_cp_size;
 }

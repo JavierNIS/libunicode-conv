@@ -5,8 +5,10 @@
 
 static inline mbsize_t
 UTF32mbLength(const charUTF32_t* src){
-  mbsize_t u8_cp_length = 0;
-  if(*src < UTF8_MASK_ONE_BYTE)
+  mbsize_t u8_cp_length;
+  if(src == 0)
+    u8_cp_length = 0;
+  else if(*src < UTF8_MASK_ONE_BYTE)
     u8_cp_length = 1;
   else if(*src < 0x800)
     u8_cp_length = 2;
@@ -19,6 +21,8 @@ UTF32mbLength(const charUTF32_t* src){
 
 static inline mbsize_t
 UTF32bytesToUTF16(const charUTF32_t* src){
+  if(src == 0)
+    return 0;
   return *src <= 0xFFFF ? 1 : 2;
 }
 

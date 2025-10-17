@@ -1,12 +1,7 @@
 #include "UTF16.h"
-#include "mbstate.h"
 
 mbsize_t 
 UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  //First check if the src and destination are okay, this is redundant and will be removed
-  if(src == 0 || dest == 0 || conver == BAD)
-    return 0;
-  
   //Get the size of the code point in numbers of 16 bytes needed
   mbsize_t u16_cp_size = CharLength16(src, conver);
 
@@ -35,7 +30,7 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
       charUTF16_t srcBE[2] = {src[0], src[1]};
       //All operations are done with big_endian in mind, so, if the 
       //code point was store in little endian, we convert the auxiliar pair to big endian
-      if(conver->_endianness == LITTLE_ENDIAN)
+      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
         SwapEndiannessU16(srcBE);
      
       //UTF-8 doesn't care about endianness, but it goes from the most relevant
@@ -55,10 +50,6 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
 
 mbsize_t 
 UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  //Again a redundant check, will be removed later on
-  if(src == 0 || dest == 0 || conver->_state == BAD)
-    return 0;
- 
   //Endianness needs to get tested, this looks weird
   mbsize_t u16_cp_size = CharLength16(src, conver);
   switch (u16_cp_size) {
@@ -70,7 +61,7 @@ UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver
       charUTF32_t destBE = 
         ((src[0] & TEN_LOWER_BITS) << 10) +
          (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
-      if(conver->_endianness == LITTLE_ENDIAN)
+      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
         SwapEndiannessU32(&destBE);
       *dest = destBE;
       break;

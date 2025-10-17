@@ -2,14 +2,14 @@
 
 mbsize_t 
 UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  if(src == 0 || dest == 0 || conver->_state == BAD)
+  if(dest == 0 || areFlagsUnsetByte(conver->_flags, NO_FAILURE_OCURRED))
     return 0;
   mbsize_t u8_cp_length = UTF32mbLength((charUTF32_t*)src);
   if(u8_cp_length > max)
     u8_cp_length = 0;
 
   charUTF32_t srcBE = *src;
-  if(conver->_endianness == LITTLE_ENDIAN)
+  if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
     SwapEndiannessU32(&srcBE);
 
   switch (u8_cp_length) {
@@ -41,7 +41,7 @@ UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
 
 mbsize_t 
 UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  if(src == 0 || dest == 0 || conver->_state == BAD)
+  if(dest == 0 || areFlagsUnsetByte(conver->_flags, NO_FAILURE_OCURRED))
     return 0;
   mbsize_t u16_cp_length = UTF32bytesToUTF16(src);
   if(u16_cp_length > max)
@@ -53,12 +53,12 @@ UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, conversionInfo_t* conver
     case 2:
       {}
       charUTF32_t code_point = *src;
-      if(conver->_endianness == LITTLE_ENDIAN)
+      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
         SwapEndiannessU32(&code_point);
       code_point-= UTF16_CODE_POINT_SUBSTRACTION;
       dest[0] = ( UTF16_MASK_HIGH_SURROGATE | ((code_point >> 10) & TEN_LOWER_BITS));
       dest[1] = ( UTF16_MASK_LOW_SURROGATE | (code_point & TEN_LOWER_BITS));
-      if(conver->_endianness == LITTLE_ENDIAN)
+      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
         SwapEndiannessU16(dest);
       break;
     default:

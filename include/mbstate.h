@@ -35,25 +35,42 @@ typedef uint8_t mbsize_t;
 #endif
 
 
-
-#define BIG_ENDIAN 1 //Now endianness can be distinguished, big endian is the 
-                     //default
-#define LITTLE_ENDIAN 0 
+/* Using a bitmask so it can easily be scaled
 
 #define OK 1 //just a rename in case something fails
 #define BAD 0
-
+*/
+#define BIG_ENDIAN 1 //Now endianness can be distinguished, big endian is the 
+                     //default
+#define LITTLE_ENDIAN 0 
+#include <bitmask.h>
 
 typedef struct{
   void* _mbchar;
-  uint8_t _state : 1;
-  uint8_t _endianness : 1;    
+  uc_flags8_t _flags;
 } conversionInfo_t;
 
-void Initialize(conversionInfo_t* conver);
-void SetError(conversionInfo_t* conver, void* badmb);
-void SetEndiannes(conversionInfo_t* conver, const uint8_t endiannes);
-void Reset(conversionInfo_t* conver);
+static inline void InitializeConversion(conversionInfo_t* conver){
+  conver->_mbchar = 0;
+  clearFlagsByte(&conver->_flags);
+  setFlagByte(&conver->_flags, NO_FAILURE_OCURRED | USING_BIG_ENDIAN);
+}
+
+static inline void SetError(conversionInfo_t* conver, void* badmb){
+  conver->_mbchar = badmb;
+  unsetFlagByte(&conver->_flags, NO_FAILURE_OCURRED);
+}
+
+static inline void SetEndianness(conversionInfo_t* conver, const uint8_t endianness){
+  if(endianness == BIG_ENDIAN)
+    setFlagByte(&conver->_flags, USING_BIG_ENDIAN);
+  else if(endianness == LITTLE_ENDIAN)
+    unsetFlagByte(&conver->_flags, USING_BIG_ENDIAN);
+}
+
+static inline void ResetConversion(conversionInfo_t* conver){
+  setFlagByte(&conver->_flags, NO_FAILURE_OCURRED);
+}
 
 
 #endif /*_MBSTATE*/

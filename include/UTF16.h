@@ -5,7 +5,8 @@
 
 static inline mbsize_t 
 CharLength16(const charUTF16_t* src, conversionInfo_t* conver){
-  if(src == 0 || conver->_state == BAD)
+  if(src == 0 || conver == 0 
+      || areFlagsUnsetByte(conver->_flags, NO_FAILURE_OCURRED))
     return 0;
   //It is assumed that character is not composed by surrogate pairs
   //In that case, the valid code points are U+0000 to U+D7FF and U+E000 to U+FFFF 
@@ -17,7 +18,7 @@ CharLength16(const charUTF16_t* src, conversionInfo_t* conver){
    * interpreted.
    */
   charUTF16_t srcBE[2] = {src[0], src[1]};
-  if(conver->_endianness == LITTLE_ENDIAN)
+  if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
     SwapEndiannessU16(srcBE);
 
   if(UTF16_MASK_HIGH_SURROGATE <= *src && 

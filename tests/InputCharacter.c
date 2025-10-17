@@ -3,12 +3,20 @@
 #include "mbstate.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main (int argc, char *argv[]) {
   int size=0;
   charUTF8_t character[5]={0};
   conversionInfo_t conver;
-  Initialize(&conver);
+  InitializeConversion(&conver);
+  
+  if(argc == 2 && strcmp("LE", argv[1]) == 0){
+    unsetFlagByte(&conver._flags, USING_BIG_ENDIAN);
+    printf("Using little endian\n\n");
+  }else{
+    printf("Using big endian\n\n");
+  }
 
   printf("Introduce the number of bytes:\n");
   do{
@@ -53,7 +61,7 @@ int main (int argc, char *argv[]) {
     return -1;
   }
 
-  printf("En hexadecimal: %x\n", utf32caracter);
+  printf("In hexadecimal: %x\n", utf32caracter);
   printf("character: %d\n\n", utf32caracter);
 
   free(utf16character);

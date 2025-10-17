@@ -5,7 +5,8 @@
 
 static inline mbsize_t 
 CharLength(const charUTF8_t* src, conversionInfo_t* conver){
-  if(src == 0 || conver->_state == BAD)
+  if(src == 0 || conver == 0 
+      || areFlagsUnsetByte(conver->_flags, NO_FAILURE_OCURRED))
     return 0;
 
   if((*src & UTF8_MASK_ONE_BYTE) == 0x0) //Code point of one byte
