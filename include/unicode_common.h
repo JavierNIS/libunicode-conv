@@ -9,8 +9,8 @@ static inline void
 SwapEndiannessU32(charUTF32_t* src){
   charUTF32_t auxiliar = *src;
   *src = (((auxiliar >> 24) & 0x000000ff) | //3th byte to 0th
-      ((auxiliar << 8) & 0x00ff0000) | //1th byte to 2th
-      ((auxiliar >> 8) & 0x0000ff00) | //2th byte to 1th
+      ((auxiliar << 8) & 0x00ff0000) | //1st byte to 2th
+      ((auxiliar >> 8) & 0x0000ff00) | //2th byte to 1st
       ((auxiliar << 24) & 0xff000000)); //0th byte to 3th
 }
 
@@ -34,6 +34,7 @@ SwapEndiannessU16(charUTF16_t* src){
 #define UTF16_MASK_HIGH_SURROGATE     0xD800
 #define UTF16_MASK_LOW_SURROGATE      0xDC00
 #define UTF16_CODE_POINT_SUBSTRACTION 0x10000
+#define UTF16_CODE_POINT_SUBSTRACTION_LE 0x00000100 //The same as the one above but with bytes swapped
 
 ////////////////// BIT MANIPULATION MACROS
 #define TEN_LOWER_BITS   0x3FF

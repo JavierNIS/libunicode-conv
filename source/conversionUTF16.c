@@ -1,4 +1,6 @@
 #include "UTF16.h"
+#include "mbstate.h"
+#include "unicode_common.h"
 
 mbsize_t 
 UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max){
@@ -50,20 +52,27 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
 
 mbsize_t 
 UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  //Endianness needs to get tested, this looks weird
+
   mbsize_t u16_cp_size = CharLength16(src, conver);
   switch (u16_cp_size) {
     case 1:
       *dest = *src;
+      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+        SwapEndiannessU32(dest);
       break;
     case 2:
       {}
-      charUTF32_t destBE = 
-        ((src[0] & TEN_LOWER_BITS) << 10) +
-         (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
-      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
-        SwapEndiannessU32(&destBE);
-      *dest = destBE;
+      if(areFlagsSetByte(conver->_flags, USING_BIG_ENDIAN)){
+        *dest = 
+          ((src[0] & TEN_LOWER_BITS) << 10) +
+          (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
+      }else{
+        charUTF16_t srcBE[2] = {src[1], src[0]};
+        *dest = 
+          ((srcBE[0] & TEN_LOWER_BITS) << 10) +
+          (srcBE[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
+        SwapEndiannessU32(dest);
+      }
       break;
     default:
       SetError(conver,(void*)src);

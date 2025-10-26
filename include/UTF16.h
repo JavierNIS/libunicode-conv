@@ -21,10 +21,10 @@ CharLength16(const charUTF16_t* src, conversionInfo_t* conver){
   if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
     SwapEndiannessU16(srcBE);
 
-  if(UTF16_MASK_HIGH_SURROGATE <= *src && 
-      *src <= UTF16_MASK_HIGH_SURROGATE + TEN_LOWER_BITS)
-    if(UTF16_MASK_LOW_SURROGATE <= *(src+1) &&
-        *(src+1) <= UTF16_MASK_LOW_SURROGATE + TEN_LOWER_BITS) return 2; 
+  if(UTF16_MASK_HIGH_SURROGATE <= srcBE[0] && 
+      srcBE[0] <= UTF16_MASK_HIGH_SURROGATE + TEN_LOWER_BITS)
+    if(UTF16_MASK_LOW_SURROGATE <= srcBE[1] &&
+        srcBE[1] <= UTF16_MASK_LOW_SURROGATE + TEN_LOWER_BITS) return 2; 
 
   SetError(conver, (void*)src); 
   return 0;

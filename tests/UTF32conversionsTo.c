@@ -22,39 +22,49 @@ void TestALLCodePoints(void){
       continue;
     charUTF32_t utf32;
     charUTF16_t utf16[num_utf16_surr];
-    charUTF8_t utf8[num_mb];
-    utf32 = (charUTF32_t)code_point;
-//    printf("Code point: %u\n", utf32);
+    charUTF8_t utf8[num_mb+1];
+    IntegerToUTF32(&utf32, code_point, &conver);
+    charUTF32_t endiannessCodepoint = utf32;
+    printf("Code point: %u\n", code_point);
+    if(!booleanBigEndian){
+      printf("Code point (endianness): %u\n", endiannessCodepoint);
+    }
+
     UTF32toUTF8(&utf32, utf8, &conver, num_mb);
     if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
-      //printf("Error in conversion from utf32 to utf8\n");
+      printf("Error in conversion from utf32 to utf8\n");
       exit(-1);
     }
-    //printf("UTF8: %s\n", utf8);
+    utf8[CharLength(utf8, &conver)] = 0;
+    printf("UTF8: %s\n", utf8);
+
     UTF32toUTF16(&utf32, utf16, &conver, num_utf16_surr);
     if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
-//      printf("Error in conversion from utf32 to utf16\n");
+      printf("Error in conversion from utf32 to utf16\n");
       exit(-1);
     }
-//    printf("UTF16: %X %X\n\n", utf16[0], utf16[1%num_utf16_surr]);
+    printf("UTF16: %X %X\n\n", utf16[0], utf16[1]);
+
+    //Now we go back to UTF-32
     UTF8toUTF32(utf8, &utf32, &conver, num_mb);
     if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
-//      printf("Error in conversion from utf8 to utf32\n");
+      printf("Error in conversion from utf8 to utf32\n");
       exit(-1);
     }
-    else if (utf32 != code_point){
-//      printf("Error in conversion, the code points are not equal (UTF8).");
-//      printf("Code point obtained: %d\n", code_point);
+    else if (utf32 != endiannessCodepoint){
+      printf("Error in conversion, the code points are not equal (UTF8). ");
+      printf("Code point obtained: %d\n", utf32);
       exit(-1);
     }
+
     UTF16toUTF32(utf16, &utf32, &conver, num_utf16_surr);
     if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
-//      printf("Error in conversion from utf16 to utf32\n");
+      printf("Error in conversion from utf16 to utf32\n");
       exit(-1);
     }
-    else if (utf32 != code_point){
-//      printf("Error in conversion, the code points are not equal (UTF16).");
-//      printf("Code point obtained: %d\n", utf32);
+    else if (utf32 != endiannessCodepoint){
+      printf("Error in conversion, the code points are not equal (UTF16). ");
+      printf("Code point obtained: %d\n", utf32);
       exit(-1);
     }
   }

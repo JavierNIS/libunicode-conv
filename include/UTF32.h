@@ -26,6 +26,13 @@ UTF32bytesToUTF16(const charUTF32_t* src){
   return *src <= 0xFFFF ? 1 : 2;
 }
 
+static inline void 
+IntegerToUTF32(charUTF32_t *src, const uint32_t codepoint, conversionInfo_t *conver){
+  *src = (charUTF32_t)codepoint;
+  if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+    SwapEndiannessU32(src);
+}
+
 mbsize_t 
 UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max);
 
