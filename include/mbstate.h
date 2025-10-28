@@ -1,5 +1,7 @@
 #ifndef _MBSTATE_
 #define _MBSTATE_
+#include "bitmask.h"
+#include "uc_bitmask.h"
 #include <stdint.h> //for least types
 
 #ifndef UTF8_CHAR
@@ -40,36 +42,59 @@ typedef uint8_t mbsize_t;
 #define OK 1 //just a rename in case something fails
 #define BAD 0
 */
-#define BIG_ENDIAN 1 //Now endianness can be distinguished, big endian is the 
-                     //default
-#define LITTLE_ENDIAN 0 
-#include <bitmask.h>
+#include <uc_bitmask.h>
 
 typedef struct{
-  void* _mbchar;
-  uc_flags8_t _flags;
+  void* context;
+  uc_bitmask32_t _flags;
 } conversionInfo_t;
 
-static inline void InitializeConversion(conversionInfo_t* conver){
-  conver->_mbchar = 0;
-  clearFlagsByte(&conver->_flags);
-  setFlagByte(&conver->_flags, NO_FAILURE_OCURRED | USING_BIG_ENDIAN);
+//init the struct
+static inline void InitializeConversion(conversionInfo_t* conver, int defaultBigEndian){
+  conver->context = 0;
+  Bitmask32Clear(&conver->_flags);
+  if(defaultBigEndian)
+    Bitmask32Set(&conver->_flags, UC_BM_CONVERSION_BIG_ENDIAN);
+
 }
 
+//error related functions
 static inline void SetError(conversionInfo_t* conver, void* badmb){
-  conver->_mbchar = badmb;
-  unsetFlagByte(&conver->_flags, NO_FAILURE_OCURRED);
+  conver->context = badmb;
+  Bitmask32Set(&conver->_flags, UC_BM_ERROR_OCURRED);
 }
 
+static inline void SetMalformedStringError(conversionInfo_t *conver, void *badmb){
+  Bitmask32Set(&conver->_flags, UC_BM_MALFORMED_STRINGS);
+  SetError(conver, badmb);
+}
+
+static inline void ClearError(conversionInfo_t* conver){
+  conver->context = 0;
+  Bitmask32Unset(&conver->_flags, UC_BM_ERROR_OCURRED);
+}
+
+static inline int ConversionHasError(const conversionInfo_t *conver){
+  return Bitmask32AnySet(conver->_flags, UC_BM_ERROR_OCURRED);
+}
+
+//endianness related functions
 static inline void SetEndianness(conversionInfo_t* conver, const uint8_t endianness){
   if(endianness == BIG_ENDIAN)
-    setFlagByte(&conver->_flags, USING_BIG_ENDIAN);
-  else if(endianness == LITTLE_ENDIAN)
-    unsetFlagByte(&conver->_flags, USING_BIG_ENDIAN);
+    Bitmask32Set(&conver->_flags, UC_BM_CONVERSION_BIG_ENDIAN);
+  else 
+    Bitmask32Unset(&conver->_flags, UC_BM_CONVERSION_BIG_ENDIAN);
 }
 
-static inline void ResetConversion(conversionInfo_t* conver){
-  setFlagByte(&conver->_flags, NO_FAILURE_OCURRED);
+static inline void SetAutodetectEndianness(conversionInfo_t *conver, const uint8_t autodetect){
+  if(autodetect)
+    Bitmask32Set(&conver->_flags, UC_BM_AUTODETECT_ENDIANNESS);
+  else
+    Bitmask32Unset(&conver->_flags, UC_BM_AUTODETECT_ENDIANNESS);
+}
+
+static inline int ConversionWithLittleEndian(const conversionInfo_t * conver){
+  return !Bitmask32AnySet(conver->_flags, UC_BM_CONVERSION_BIG_ENDIAN);
 }
 
 

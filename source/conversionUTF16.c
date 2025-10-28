@@ -1,6 +1,4 @@
 #include "UTF16.h"
-#include "mbstate.h"
-#include "unicode_common.h"
 
 mbsize_t 
 UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max){
@@ -32,14 +30,14 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
       charUTF16_t srcBE[2] = {src[0], src[1]};
       //All operations are done with big_endian in mind, so, if the 
       //code point was store in little endian, we convert the auxiliar pair to big endian
-      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+      if(ConversionWithLittleEndian(conver))
         SwapEndiannessU16(srcBE);
      
       //UTF-8 doesn't care about endianness, but it goes from the most relevant
       //bit to the least relevant bit
       uint32_t code_point = ((srcBE[0] & TEN_LOWER_BITS) << 10) + 
         (srcBE[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
-      dest[0] = (0xF0 | ((code_point >> 18) & 0x07));
+      dest[0] = (UTF8_MASK_FOUR_BYTES | ((code_point >> 18) & THREE_LOWER_BITS));
       dest[1] = (UTF8_MASK_ONE_BYTE | ((code_point >> 12) & SIX_LOWER_BITS));
       dest[2] = (UTF8_MASK_ONE_BYTE | ((code_point >> 6) & SIX_LOWER_BITS));
       dest[3] = (UTF8_MASK_ONE_BYTE | (code_point & SIX_LOWER_BITS));
@@ -57,12 +55,12 @@ UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver
   switch (u16_cp_size) {
     case 1:
       *dest = *src;
-      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+      if(ConversionWithLittleEndian(conver))
         SwapEndiannessU32(dest);
       break;
     case 2:
       {}
-      if(areFlagsSetByte(conver->_flags, USING_BIG_ENDIAN)){
+      if(ConversionWithLittleEndian(conver)){
         *dest = 
           ((src[0] & TEN_LOWER_BITS) << 10) +
           (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;

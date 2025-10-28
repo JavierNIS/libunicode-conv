@@ -29,7 +29,7 @@ UTF32bytesToUTF16(const charUTF32_t* src){
 static inline void 
 IntegerToUTF32(charUTF32_t *src, const uint32_t codepoint, conversionInfo_t *conver){
   *src = (charUTF32_t)codepoint;
-  if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+  if(ConversionWithLittleEndian(conver))
     SwapEndiannessU32(src);
 }
 

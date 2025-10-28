@@ -1,26 +1,5 @@
 #include "UTF8.h"
 
-//TESTED
-//static inline mbsize_t 
-//CharLength(const charUTF8_t* src, conversionInfo_t* conver){
-//  if(src == 0 || conver->_state == BAD)
-//    return 0;
-//
-//  if((*src & UTF8_MASK_ONE_BYTE) == 0x0) //Code point of one byte
-//    return 1;
-//  charUTF8_t srcAux = *src & UTF8_MASK_FOUR_BYTES;
-//  if(srcAux == UTF8_MASK_TWO_BYTES || srcAux == 0xD0) //Two bytes
-//    return 2;
-//  else if(srcAux == UTF8_MASK_THREE_BYTES) //Three bytes
-//    return 3;
-//  else if(srcAux == UTF8_MASK_FOUR_BYTES) //Four bytes
-//    return 4;
-//  else{
-//    SetError(conver, (void*)src);
-//    return 0;
-//  }
-//}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 mbsize_t 
@@ -54,7 +33,7 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, 
 
       dest[0] = (UTF16_MASK_HIGH_SURROGATE | ((code_point >> 10)));
       dest[1] = (UTF16_MASK_LOW_SURROGATE | ((code_point & TEN_LOWER_BITS)));
-      if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+      if(ConversionWithLittleEndian(conver))
         SwapEndiannessU16(dest);
       break;
   }
@@ -93,7 +72,7 @@ UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, 
       break;
   }
 
-  if(areFlagsUnsetByte(conver->_flags, USING_BIG_ENDIAN))
+  if(ConversionWithLittleEndian(conver))
     SwapEndiannessU32(dest);
   return u8_cp_size;
 }

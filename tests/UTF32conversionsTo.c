@@ -12,10 +12,8 @@ static mbsize_t booleanBigEndian = 1;
 
 void TestALLCodePoints(void){
   conversionInfo_t conver; 
-  InitializeConversion(&conver);
-  if(!booleanBigEndian)
-    unsetFlagByte(&conver._flags, USING_BIG_ENDIAN);
-
+  InitializeConversion(&conver, booleanBigEndian);
+  
   for(uint32_t code_point = 0; code_point <= SSP_PLANE[1].end;
       code_point++){
     if(code_point >= 0xD800 && code_point <= 0xDFFF)
@@ -31,7 +29,7 @@ void TestALLCodePoints(void){
     }
 
     UTF32toUTF8(&utf32, utf8, &conver, num_mb);
-    if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
+    if(ConversionHasError(&conver)){
       printf("Error in conversion from utf32 to utf8\n");
       exit(-1);
     }
@@ -39,7 +37,7 @@ void TestALLCodePoints(void){
     printf("UTF8: %s\n", utf8);
 
     UTF32toUTF16(&utf32, utf16, &conver, num_utf16_surr);
-    if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
+    if(ConversionHasError(&conver)){
       printf("Error in conversion from utf32 to utf16\n");
       exit(-1);
     }
@@ -47,7 +45,7 @@ void TestALLCodePoints(void){
 
     //Now we go back to UTF-32
     UTF8toUTF32(utf8, &utf32, &conver, num_mb);
-    if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
+    if(ConversionHasError(&conver)){
       printf("Error in conversion from utf8 to utf32\n");
       exit(-1);
     }
@@ -58,7 +56,7 @@ void TestALLCodePoints(void){
     }
 
     UTF16toUTF32(utf16, &utf32, &conver, num_utf16_surr);
-    if(areFlagsUnsetByte(conver._flags, NO_FAILURE_OCURRED)){
+    if(ConversionHasError(&conver)){
       printf("Error in conversion from utf16 to utf32\n");
       exit(-1);
     }

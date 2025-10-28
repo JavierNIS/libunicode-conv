@@ -9,13 +9,13 @@ int main (int argc, char *argv[]) {
   int size=0;
   charUTF8_t character[5]={0};
   conversionInfo_t conver;
-  InitializeConversion(&conver);
   
   if(argc == 2 && strcmp("LE", argv[1]) == 0){
-    unsetFlagByte(&conver._flags, USING_BIG_ENDIAN);
+    InitializeConversion(&conver, LITTLE_ENDIAN);
     printf("Using little endian\n\n");
   }else{
     printf("Using big endian\n\n");
+    InitializeConversion(&conver, BIG_ENDIAN);
   }
 
   printf("Introduce the number of bytes:\n");
