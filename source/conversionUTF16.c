@@ -6,6 +6,9 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest,
   //Get the size of the code point in numbers of 16 bytes needed
   mbsize_t u16_cp_size = CharLength16(src, conver);
 
+  if(!utf8bytes || (u16_cp_size == 2 && utf8bytes < 4))
+    u16_cp_size = 0;
+
   switch(u16_cp_size){
     //If the code point is smaller than 0xFFFF (can be stored in 16 bits)
     case 1:
@@ -13,15 +16,16 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest,
       if (*src < UTF8_MASK_ONE_BYTE){
         *dest = *src;
       //If it requires more than 7 bits, but less than 11 bits (110x xxxx 10xx xxxx)
-      }else if (*src < 0x800){
+      }else if (*src < 0x800 && utf8bytes >= 2){
         dest[0] = (UTF8_MASK_TWO_BYTES | ((*src >> 6) & FIVE_LOWER_BITS));
         dest[1] = (UTF8_MASK_ONE_BYTE | (*src & SIX_LOWER_BITS));
       //If it requires more than 11 bits (1110 xxxx 10xx xxxx 10xx xxxx, at a maximum of 16 bits)
-      }else{
+      }else if(utf8bytes >= 3){
         dest[0] = (UTF8_MASK_THREE_BYTES | ((*src >> 12) & FOUR_LOWER_BITS));
         dest[1] = (UTF8_MASK_ONE_BYTE | ((*src >> 6) & SIX_LOWER_BITS));
         dest[2] = (UTF8_MASK_ONE_BYTE | (*src & SIX_LOWER_BITS));
-      }
+      }else 
+        SetError(conver, (void*)src);
       break;
 
     case 2:

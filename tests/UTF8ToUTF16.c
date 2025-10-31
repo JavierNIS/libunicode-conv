@@ -46,7 +46,7 @@ void TestAllCodePoints(void){
     utf8[CharLength(utf8, &conver)] = 0;
     printf("UTF8 (From UTF16): %s\n", utf8);
 
-    UTF8toUTF32(utf8, &utf32, &conver, num_mb);
+    UTF8toUTF32(utf8, &utf32, &conver);
     if(ConversionHasError(&conver)){
       printf("Error in conversion from utf16 to utf8\n");
       exit(-1);

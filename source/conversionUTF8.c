@@ -8,7 +8,7 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest,
   mbsize_t u8_cp_size = CharLength(src, conver);
   //not a valid utf8 character
   //if no utf16bytes left for conversion
-  if(!maxutf16bytes || maxutf16bytes == u8_cp_size-3)
+  if(!maxutf16bytes || maxutf16bytes + 3 == u8_cp_size)
     u8_cp_size=0; 
 
   switch (u8_cp_size){

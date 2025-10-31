@@ -56,7 +56,7 @@ int main (int argc, char *argv[]) {
 
   printf("Converting into UTF-32...\n\n");
 
-  if(UTF8toUTF32(character, &utf32caracter, &conver, size) != real_size){
+  if(UTF8toUTF32(character, &utf32caracter, &conver) != real_size){
     printf("There was a problem trying to convert to UTF-32\n");
     return -1;
   }

@@ -1,8 +1,9 @@
 #include "UTF32.h"
 
 mbsize_t 
-UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  if(dest == 0 || ConversionHasError(conver))
+UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf8bytes){
+  if(ConversionHasError(conver))
     return 0;
 
   charUTF32_t srcBE = *src;
@@ -10,7 +11,7 @@ UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
     SwapEndiannessU32(&srcBE);
 
   mbsize_t u8_cp_length = UTF32mbLength(&srcBE);
-  if(u8_cp_length > max)
+  if(u8_cp_length > utf8bytes)
     u8_cp_length = 0;
 
 
@@ -42,15 +43,17 @@ UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
 }
 
 mbsize_t 
-UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  if(dest == 0 || ConversionHasError(conver))
+UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf16bytes){
+  if(ConversionHasError(conver))
     return 0;
+
   charUTF32_t srcBE = *src;
   if(ConversionWithLittleEndian(conver))
     SwapEndiannessU32(&srcBE);
 
   mbsize_t u16_cp_length = UTF32bytesToUTF16(&srcBE);
-  if(u16_cp_length > max)
+  if(u16_cp_length > utf16bytes)
     u16_cp_length = 0;
   switch (u16_cp_length){
     case 1:
