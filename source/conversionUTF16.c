@@ -1,7 +1,8 @@
 #include "UTF16.h"
 
 mbsize_t 
-UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max){
+UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf8bytes){
   //Get the size of the code point in numbers of 16 bytes needed
   mbsize_t u16_cp_size = CharLength16(src, conver);
 
@@ -49,7 +50,7 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, 
 }
 
 mbsize_t 
-UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max){
+UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver){
 
   mbsize_t u16_cp_size = CharLength16(src, conver);
   switch (u16_cp_size) {
@@ -82,6 +83,6 @@ UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver
 #ifdef __linux__
 mbsize_t 
 UTF16toWIDE(const charUTF16_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max){
-  return (UTF16toUTF32(src, dest, conver, max));
+  return (UTF16toUTF32(src, dest, conver));
 }
 #endif /*__linux__*/

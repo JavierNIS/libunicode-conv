@@ -3,13 +3,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 mbsize_t 
-UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t max){
+UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, 
+    conversionInfo_t* conver, const mbsize_t maxutf16bytes){
   mbsize_t u8_cp_size = CharLength(src, conver);
-  if (u8_cp_size > max)
-    u8_cp_size = 0;
+  //not a valid utf8 character
+  //if no utf16bytes left for conversion
+  if(!maxutf16bytes || maxutf16bytes == u8_cp_size-3)
+    u8_cp_size=0; 
 
   switch (u8_cp_size){
-    default:
+    case 0:
       SetError(conver, (void*)src);
       break;
     case 1:
@@ -43,10 +46,8 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, 
 ////////////////////////////////////////////////////////////////////////////////
 
 mbsize_t 
-UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max){
+UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver){
   mbsize_t u8_cp_size = CharLength(src, conver);
-  if(u8_cp_size > max)
-    u8_cp_size = 0;
   
   switch (u8_cp_size){
     default:
@@ -79,10 +80,10 @@ UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, 
 ////////////////////////////////////////////////////////////////////////////////
 
 mbsize_t 
-UTF8toWIDE(const charUTF8_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max){
+UTF8toWIDE(const charUTF8_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t maxutf16bytes){
 #ifdef _WINDOWS_
-  return UTF8toUTF16(src, dest, conver, max);
+  return UTF8toUTF16(src, dest, conver, maxutf16bytes);
 #elif defined __linux__
-  return UTF8toUTF32(src, dest, conver, max);
+  return UTF8toUTF32(src, dest, conver);
 #endif
 }

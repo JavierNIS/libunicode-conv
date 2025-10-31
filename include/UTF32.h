@@ -42,6 +42,15 @@ UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, conversionInfo_t* conver
 #ifdef _WINDOWS_
 mbsize_t 
 UTF32toWIDE(const charUTF32_t*, widechar_t*, conversionInfo_t*, const mbsize_t max);
+
+size_t
+UTF32stringToWIDE(const charUTF32_t*, widechar_t*, conversionInfo_t*, const size_t);
 #endif /*_WINDOWS_*/
+
+size_t 
+UTF32stringToUTF8(const charUTF32_t *src, charUTF8_t *dest, const size_t numberOfCodepointsToEncode);
+
+size_t 
+UTF32stringToUTF16(const charUTF32_t *src, charUTF16_t *dest, const size_t numberOfCodepointsToEncode);
 
 #endif /*UTF32_CONVERSION*/

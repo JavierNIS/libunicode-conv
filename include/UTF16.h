@@ -26,19 +26,27 @@ CharLength16(const charUTF16_t* src, conversionInfo_t* conver){
     if(UTF16_MASK_LOW_SURROGATE <= srcBE[1] &&
         srcBE[1] <= UTF16_MASK_LOW_SURROGATE + TEN_LOWER_BITS) return 2; 
 
-  SetError(conver, (void*)src); 
   return 0;
 }
 
 mbsize_t 
-UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t max);
+UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t utf8bytes);
 
 mbsize_t 
-UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max);
+UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver);
 
 #ifdef __linux__
 mbsize_t 
 UTF16toWIDE(const charUTF16_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max);
+
+size_t 
+UTF8stringToWIDE(const charUTF8_t *src, charUTF16_t *dest, const size_t numberOfBytesToEncode);
 #endif /*__linux__*/
+
+size_t 
+UTF16stringToUTF8(const charUTF16_t *src, charUTF8_t *dest, const size_t numberOfBytesToEncode);
+
+size_t 
+UTF16stringToUTF32(const charUTF16_t *src, charUTF32_t *dest, const size_t numberOfCodepointsToEncode);
 
 #endif /*UTF16_CONVERSION*/

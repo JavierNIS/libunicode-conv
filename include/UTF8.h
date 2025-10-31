@@ -18,19 +18,26 @@ CharLength(const charUTF8_t* src, conversionInfo_t* conver){
     return 3;
   else if(srcAux == UTF8_MASK_FOUR_BYTES) //Four bytes
     return 4;
-  else{
-    SetError(conver, (void*)src);
+  else
     return 0;
-  }
 }
 
 mbsize_t 
-UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t max);
+UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t utf16bytes);
 
 mbsize_t 
-UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver, const mbsize_t max);
+UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver);
 
 mbsize_t 
 UTF8toWIDE(const charUTF8_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max);
+
+size_t 
+UTF8stringToUTF16(const charUTF8_t *src, charUTF16_t *dest, const size_t numberOfBytesToEncode);
+
+size_t 
+UTF8stringToUTF32(const charUTF8_t *src, charUTF32_t *dest, const size_t numberOfBytesToEncode);
+
+size_t 
+UTF8stringToWIDE(const charUTF8_t *src, charUTF16_t *dest, const size_t numberOfBytesToEncode);
 
 #endif /*UTF8_CONVERSION*/
