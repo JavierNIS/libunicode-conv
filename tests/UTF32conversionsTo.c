@@ -1,9 +1,10 @@
 #include "UTF32.h"
 #include "UTF16.h"
 #include "UTF8.h"
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 const static mbsize_t num_mb = 4;
 const static mbsize_t num_utf16_surr = 2;
@@ -24,9 +25,7 @@ void TestALLCodePoints(void){
     IntegerToUTF32(&utf32, code_point, &conver);
     charUTF32_t endiannessCodepoint = utf32;
     printf("Code point: %u\n", code_point);
-    if(!booleanBigEndian){
-      printf("Code point (endianness): %u\n", endiannessCodepoint);
-    }
+    printf("Code point (endianness): %u\n", endiannessCodepoint);
 
     UTF32toUTF8(&utf32, utf8, &conver, num_mb);
     if(ConversionHasError(&conver)){
@@ -73,6 +72,8 @@ int main(int argc, char *argv[]){
   if(argc == 2 && strcmp("LE", argv[1]) == 0){
     booleanBigEndian = 0;
     printf("Using little endian\n\n");
+  }else{
+    printf("Using big endian\n\n");
   }
   TestALLCodePoints();
   printf("Test successful\n");

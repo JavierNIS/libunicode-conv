@@ -16,11 +16,13 @@ void TestAllCodePoints(void){
       code_point++){
     if(code_point >= 0xD800 && code_point <= 0xDFFF)
       continue;
+
     charUTF32_t utf32;
     charUTF16_t utf16[num_utf16_surr];
     charUTF8_t utf8[num_mb+1];
     IntegerToUTF32(&utf32, code_point, &conver);
     charUTF32_t endiannessCodepoint = utf32;
+
     printf("Code point (endianness): %u\n", endiannessCodepoint);
     printf("Code point: %u\n", code_point);
 

@@ -2,6 +2,7 @@
 #define UNICODE_COMMON
 
 #include <stddef.h>
+#include <string.h>
 #include "platform_integration.h"
 #include "mbstate.h"
 #include "codepoints.h"

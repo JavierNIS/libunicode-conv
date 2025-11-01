@@ -34,10 +34,12 @@ IntegerToUTF32(charUTF32_t *src, const uint32_t codepoint, conversionInfo_t *con
 }
 
 mbsize_t 
-UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t utf8bytes);
+UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf8bytes);
 
 mbsize_t 
-UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t utf16bytes);
+UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf16bytes);
 
 #ifdef _WINDOWS_
 mbsize_t 
@@ -48,9 +50,11 @@ UTF32stringToWIDE(const charUTF32_t*, widechar_t*, conversionInfo_t*, const size
 #endif /*_WINDOWS_*/
 
 size_t 
-UTF32stringToUTF8(const charUTF32_t *src, charUTF8_t *dest, const size_t numberOfCodepointsToEncode);
+UTF32stringToUTF8(const charUTF32_t *src, charUTF8_t *dest, 
+    conversionInfo_t *conver, const size_t utf8bytesAvailable);
 
 size_t 
-UTF32stringToUTF16(const charUTF32_t *src, charUTF16_t *dest, const size_t numberOfCodepointsToEncode);
+UTF32stringToUTF16(const charUTF32_t *src, charUTF16_t *dest, 
+    conversionInfo_t *conver, const size_t utf16unitsAvailable);
 
 #endif /*UTF32_CONVERSION*/

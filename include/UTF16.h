@@ -30,23 +30,28 @@ CharLength16(const charUTF16_t* src, conversionInfo_t* conver){
 }
 
 mbsize_t 
-UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, conversionInfo_t* conver, const mbsize_t utf8bytes);
+UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf8bytes);
 
 mbsize_t 
 UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver);
 
 #ifdef __linux__
 mbsize_t 
-UTF16toWIDE(const charUTF16_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max);
+UTF16toWIDE(const charUTF16_t* src, widechar_t* dest, 
+    conversionInfo_t* conver, const mbsize_t max);
 
 size_t 
-UTF8stringToWIDE(const charUTF8_t *src, charUTF16_t *dest, const size_t numberOfBytesToEncode);
+UTF16stringToWIDE(const charUTF16_t *src, widechar_t *dest, 
+    conversionInfo_t* conver, const size_t numberOfUnitsToEncode);
 #endif /*__linux__*/
 
 size_t 
-UTF16stringToUTF8(const charUTF16_t *src, charUTF8_t *dest, const size_t numberOfBytesToEncode);
+UTF16stringToUTF8(const charUTF16_t *src, charUTF8_t *dest, 
+    conversionInfo_t* conver, const size_t utf8bytesAvailable);
 
 size_t 
-UTF16stringToUTF32(const charUTF16_t *src, charUTF32_t *dest, const size_t numberOfCodepointsToEncode);
+UTF16stringToUTF32(const charUTF16_t *src, charUTF32_t *dest, 
+    conversionInfo_t* conver, const size_t utf32unitsAvailable);
 
 #endif /*UTF16_CONVERSION*/

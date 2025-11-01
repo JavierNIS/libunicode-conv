@@ -1,4 +1,6 @@
 #include "UTF32.h"
+#include "UTF8.h"
+#include "UTF16.h"
 
 mbsize_t 
 UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest, 
@@ -79,4 +81,75 @@ mbsize_t
 UTF32toWIDE(const charUTF32_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max){
   return (UTF32toUTF16(src, dest, conver, max));
 }
+
+size_t
+UTF32stringToWIDE(const charUTF32_t* src, widechar_t* dest, conversionInfo_t* conver, const size_t max){
+  return (UTF32stringToUTF16(src, dest, conver, max));
+}
 #endif /*_WINDOWS_*/
+
+size_t 
+UTF32stringToUTF8(const charUTF32_t *src, charUTF8_t *dest, 
+    conversionInfo_t *conver, const size_t utf8bytesAvailable){
+  size_t bytesEncoded = 0;
+  if(src == 0 || dest == 0 || utf8bytesAvailable == 0)
+    return bytesEncoded;
+
+  const charUTF32_t *inputUTF32 = src;
+  charUTF8_t buffer[4];
+  charUTF8_t *outputUTF8 = dest;
+  mbsize_t outputBytes;
+
+  while(bytesEncoded + 1 < utf8bytesAvailable && *inputUTF32 != 0){
+    outputBytes = UTF32toUTF8(inputUTF32, buffer, conver, 4);
+
+    if(ConversionHasError(conver)) break;
+
+    outputBytes = CharLength(buffer, conver);
+    if(outputBytes && bytesEncoded + outputBytes < utf8bytesAvailable){
+      memcpy(outputUTF8, buffer, outputBytes);
+      bytesEncoded += outputBytes;
+      outputUTF8 += outputBytes;
+      ++inputUTF32;
+    }else{
+      //TOO_SHORT_STRING error
+      break;
+    }
+  }
+  *outputUTF8 = '\0';
+  ++bytesEncoded;
+  return bytesEncoded;
+}
+
+size_t 
+UTF32stringToUTF16(const charUTF32_t *src, charUTF16_t *dest, 
+    conversionInfo_t *conver, const size_t utf16unitsAvailable){
+  size_t utf16unitsEncoded = 0;
+  if(src == 0 || dest == 0 || utf16unitsAvailable == 0)
+    return utf16unitsEncoded;
+
+  const charUTF32_t *inputUTF32 = src;
+  charUTF16_t buffer[2];
+  charUTF16_t *outputUTF16 = dest;
+  mbsize_t outputUnits;
+
+  while(utf16unitsEncoded + 1 < utf16unitsAvailable && *inputUTF32 != 0){
+    outputUnits = UTF32toUTF16(inputUTF32, buffer, conver, 2);
+
+    if(ConversionHasError(conver)) break;
+
+    outputUnits = CharLength16(buffer, conver);
+    if(outputUnits && utf16unitsEncoded + outputUnits < utf16unitsAvailable){
+      memcpy(outputUTF16, buffer, outputUnits*sizeof(charUTF16_t));
+      utf16unitsEncoded += outputUnits;
+      outputUTF16 += outputUnits;
+      ++inputUTF32;
+    }else{
+      //TOO_SHORT_STRING error
+      break;
+    }
+  }
+  memset(outputUTF16, 0, sizeof(charUTF16_t));
+  ++utf16unitsEncoded;
+  return utf16unitsEncoded;
+}

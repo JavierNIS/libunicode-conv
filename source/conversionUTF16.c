@@ -1,4 +1,5 @@
 #include "UTF16.h"
+#include "UTF8.h"
 
 mbsize_t 
 UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest, 
@@ -65,7 +66,7 @@ UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver
       break;
     case 2:
       {}
-      if(ConversionWithLittleEndian(conver)){
+      if(!ConversionWithLittleEndian(conver)){
         *dest = 
           ((src[0] & TEN_LOWER_BITS) << 10) +
           (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
@@ -89,4 +90,73 @@ mbsize_t
 UTF16toWIDE(const charUTF16_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max){
   return (UTF16toUTF32(src, dest, conver));
 }
+
+size_t 
+UTF16stringToWIDE(const charUTF16_t *src, widechar_t *dest, 
+    conversionInfo_t* conver, const size_t numberOfUnitsToEncode){
+  return (UTF16stringToUTF32(src, dest, conver, numberOfUnitsToEncode));
+}
 #endif /*__linux__*/
+
+size_t 
+UTF16stringToUTF8(const charUTF16_t *src, charUTF8_t *dest, 
+    conversionInfo_t* conver, const size_t utf8bytesAvailable){
+  size_t bytesEncoded = 0;
+  if(src == 0 || dest == 0 || utf8bytesAvailable == 0)
+    return bytesEncoded;
+
+  charUTF8_t *outputUTF8 = dest;
+  charUTF8_t bufferUTF8[4];
+  const charUTF16_t *inputUTF16 = src;
+  mbsize_t inputUnitsConsumed, outputBytes;
+
+  while(bytesEncoded + 1 < utf8bytesAvailable && *inputUTF16 != 0){
+    inputUnitsConsumed = UTF16toUTF8(inputUTF16, bufferUTF8, conver, 4);
+
+    if(ConversionHasError(conver)) break;
+
+    outputBytes = CharLength(bufferUTF8, conver);
+    if(outputBytes && bytesEncoded + outputBytes < utf8bytesAvailable){
+      memcpy(outputUTF8, bufferUTF8, outputBytes);
+      bytesEncoded += outputBytes;
+      outputUTF8 += outputBytes;
+      inputUTF16 += inputUnitsConsumed;
+    }else{
+      //TOO_SHORT_STRING error
+      break;
+    }
+  }
+  *outputUTF8 = '\0';
+  ++bytesEncoded;
+  return bytesEncoded;
+}
+
+size_t 
+UTF16stringToUTF32(const charUTF16_t *src, charUTF32_t *dest, 
+    conversionInfo_t* conver, const size_t utf32unitsAvailable){
+  size_t utf32unitsEncoded = 0;
+  if(src == 0 || dest == 0 || utf32unitsAvailable == 0)
+    return utf32unitsEncoded;
+
+  charUTF32_t *outputUTF32 = dest;
+  const charUTF16_t *inputUTF16 = src;
+  mbsize_t inputUnitsConsumed;
+  
+  //utf32unitsEncoded is increased by one to take into account that the string will be null terminated
+  while(utf32unitsEncoded + 1 < utf32unitsAvailable && *inputUTF16 != 0){
+    inputUnitsConsumed = UTF16toUTF32(src, outputUTF32, conver);
+
+    //if an error took place during conversion, we bail out
+    if(ConversionHasError(conver)) break;
+    //If the conversion was successful, we update the position of the pointers
+    ++outputUTF32;
+    ++utf32unitsEncoded;
+    inputUTF16+=inputUnitsConsumed;
+  }
+  if(utf32unitsEncoded+1 == utf32unitsAvailable && *inputUTF16 != 0){
+    //TOO_SHORT_STRING error in conversion
+  }
+  ++utf32unitsEncoded;
+  memset(outputUTF32, 0, sizeof(charUTF32_t));
+  return utf32unitsEncoded;
+}

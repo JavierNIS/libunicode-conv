@@ -23,21 +23,26 @@ CharLength(const charUTF8_t* src, conversionInfo_t* conver){
 }
 
 mbsize_t 
-UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, conversionInfo_t* conver, const mbsize_t utf16bytes);
+UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest, 
+    conversionInfo_t* conver, const mbsize_t utf16bytes);
 
 mbsize_t 
 UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver);
 
 mbsize_t 
-UTF8toWIDE(const charUTF8_t* src, widechar_t* dest, conversionInfo_t* conver, const mbsize_t max);
+UTF8toWIDE(const charUTF8_t* src, widechar_t* dest, 
+    conversionInfo_t* conver, const mbsize_t max);
 
 size_t 
-UTF8stringToUTF16(const charUTF8_t *src, charUTF16_t *dest, const size_t numberOfBytesToEncode);
+UTF8stringToUTF16(const charUTF8_t *src, charUTF16_t *dest, 
+    conversionInfo_t *conver, const size_t utf16unitsAvailable);
 
 size_t 
-UTF8stringToUTF32(const charUTF8_t *src, charUTF32_t *dest, const size_t numberOfBytesToEncode);
+UTF8stringToUTF32(const charUTF8_t *src, charUTF32_t *dest, 
+    conversionInfo_t *conver, const size_t utf32unitsAvailable);
 
 size_t 
-UTF8stringToWIDE(const charUTF8_t *src, charUTF16_t *dest, const size_t numberOfBytesToEncode);
+UTF8stringToWIDE(const charUTF8_t *src, widechar_t *dest, 
+    conversionInfo_t *conver, const size_t numberOfUnitsAvailable);
 
 #endif /*UTF8_CONVERSION*/
