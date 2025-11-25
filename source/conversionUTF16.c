@@ -144,7 +144,7 @@ UTF16stringToUTF32(const charUTF16_t *src, charUTF32_t *dest,
   
   //utf32unitsEncoded is increased by one to take into account that the string will be null terminated
   while(utf32unitsEncoded + 1 < utf32unitsAvailable && *inputUTF16 != 0){
-    inputUnitsConsumed = UTF16toUTF32(src, outputUTF32, conver);
+    inputUnitsConsumed = UTF16toUTF32(inputUTF16, outputUTF32, conver);
 
     //if an error took place during conversion, we bail out
     if(ConversionHasError(conver)) break;

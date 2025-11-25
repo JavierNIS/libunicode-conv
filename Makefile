@@ -8,7 +8,7 @@ HEADER_DIR = include/
 OBJ_DIR = objects/
 TEST_DIR = tests/
 COMP = gcc
-CXXFLAGS = -std=c11 -Wall -g -Winline -pedantic -I$(HEADER_DIR)
+CXXFLAGS = -std=c11 -Wall -g -O0 -Winline -pedantic -I$(HEADER_DIR)
 
 #Globals
 SOURCES 		 := $(wildcard $(SRC_DIR)*.c)
@@ -17,7 +17,7 @@ TESTS				 := $(wildcard $(TEST_DIR)*.c)
 SRC_OBJECTS  := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(SOURCES))
 TEST_OBJECTS := $(patsubst $(TEST_DIR)%.c, $(OBJ_DIR)%.o, $(TESTS))
 
-TEST_NAMES := UTF8ToUTF16 UTF32conversionsTo InputCharacter
+TEST_NAMES := UTF8ToUTF16 UTF32conversionsTo InputCharacter UTF8stringsConversions 
 
 all: obj $(TEST_NAMES)
 #Make the directory for the objects
