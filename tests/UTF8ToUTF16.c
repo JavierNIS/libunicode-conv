@@ -17,13 +17,11 @@ void TestAllCodePoints(void){
     if(code_point >= 0xD800 && code_point <= 0xDFFF)
       continue;
 
-    charUTF32_t utf32;
+    charUTF32_t utf32 = (charUTF32_t) code_point;
     charUTF16_t utf16[num_utf16_surr];
     charUTF8_t utf8[num_mb+1];
-    IntegerToUTF32(&utf32, code_point, &conver);
-    charUTF32_t endiannessCodepoint = utf32;
+    charUTF32_t utf32_codepoint = utf32;
 
-    printf("Code point (endianness): %u\n", endiannessCodepoint);
     printf("Code point: %u\n", code_point);
 
     UTF32toUTF8(&utf32, utf8, &conver, num_mb);
@@ -53,7 +51,7 @@ void TestAllCodePoints(void){
       printf("Error in conversion from utf16 to utf8\n");
       exit(-1);
     }
-    else if(utf32 != endiannessCodepoint){
+    else if(utf32 != utf32_codepoint){
       printf("Error in conversion. Code points are not equal.\nCode point received: %d\n", utf32);
       printf("Hexadecimal, original: %x\tobtained:%x\n", code_point, utf32);
       exit(-1);

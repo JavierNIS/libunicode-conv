@@ -17,14 +17,10 @@ CharLength16(const charUTF16_t* src, conversionInfo_t* conver){
    * as a surrogate pair. First the endianness is checked and then the pairs are 
    * interpreted.
    */
-  charUTF16_t srcBE[2] = {src[0], src[1]};
-  if(ConversionWithLittleEndian(conver))
-    SwapEndiannessU16(srcBE);
-
-  if(UTF16_MASK_HIGH_SURROGATE <= srcBE[0] && 
-      srcBE[0] <= UTF16_MASK_HIGH_SURROGATE + TEN_LOWER_BITS)
-    if(UTF16_MASK_LOW_SURROGATE <= srcBE[1] &&
-        srcBE[1] <= UTF16_MASK_LOW_SURROGATE + TEN_LOWER_BITS) return 2; 
+  if(UTF16_MASK_HIGH_SURROGATE <= src[0] && 
+      src[0] <= UTF16_MASK_HIGH_SURROGATE + TEN_LOWER_BITS)
+    if(UTF16_MASK_LOW_SURROGATE <= src[1] &&
+        src[1] <= UTF16_MASK_LOW_SURROGATE + TEN_LOWER_BITS) return 2; 
 
   return 0;
 }

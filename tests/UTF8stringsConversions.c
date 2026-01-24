@@ -1,6 +1,7 @@
 #include "UTF8.h"
 #include "UTF16.h"
 #include "UTF32.h"
+#include "print.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -97,6 +98,8 @@ void testStrings(const charUTF8_t *string, const size_t codepoints,
         for(int i = 0; i < numberutf16; i++){
           printf("%x-", utf16string[i]);
         }
+        printf("Resulting utf-16 string (byte by byte): ");
+        write_utf16(stdout, utf16string, numberutf16, conver->_flags);
         break;
       case UTF8_UTF32:
       case UTF16_UTF32:
@@ -104,6 +107,8 @@ void testStrings(const charUTF8_t *string, const size_t codepoints,
         for(int i = 0; i < codepoints; i++){
           printf("%d-", utf32string[i]);
         }
+        printf("Resulting utf-32 string (byte by byte): ");
+        write_utf32(stdout, utf32string, codepoints, conver->_flags);
         break;
     }
     

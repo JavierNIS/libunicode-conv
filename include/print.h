@@ -41,4 +41,35 @@ static inline size_t write_utf32_swapped(FILE *file, const charUTF32_t *buf, siz
   return units_written;
 }
 
+static inline size_t write_utf16(FILE *file, const charUTF16_t *buf, 
+    size_t units, const uc_bitmask32_t bm){
+  size_t units_written = 0;
+
+  bitmask32_t 
+    same_endianness = (UC_BM_CONVERSION_BIG_ENDIAN | UC_BM_CPU_ENDIANNESS_BIG_ENDIAN);
+  if(Bitmask32AllSet(bm, same_endianness) ||
+      Bitmask32AllUnset(bm, same_endianness))
+    units_written = write_utf16_native(file, buf, units);
+  else 
+    units_written = write_utf16_swapped(file, buf, units);
+
+  return units_written;
+}
+
+
+static inline size_t write_utf32(FILE *file, const charUTF32_t *buf, 
+    size_t units, const uc_bitmask32_t bm){
+  size_t units_written = 0;
+
+  bitmask32_t 
+    same_endianness = (UC_BM_CONVERSION_BIG_ENDIAN | UC_BM_CPU_ENDIANNESS_BIG_ENDIAN);
+  if(Bitmask32AllSet(bm, same_endianness) ||
+      Bitmask32AllUnset(bm, same_endianness))
+    units_written = write_utf32_native(file, buf, units);
+  else 
+    units_written = write_utf32_swapped(file, buf, units);
+
+  return units_written;
+}
+
 #endif

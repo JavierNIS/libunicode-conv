@@ -17,7 +17,7 @@ TESTS				 := $(wildcard $(TEST_DIR)*.c)
 SRC_OBJECTS  := $(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(SOURCES))
 TEST_OBJECTS := $(patsubst $(TEST_DIR)%.c, $(OBJ_DIR)%.o, $(TESTS))
 
-TEST_NAMES := UTF8ToUTF16 UTF32conversionsTo InputCharacter UTF8stringsConversions 
+TEST_NAMES := UTF8ToUTF16 UTF32conversionsTo InputCharacter UTF8stringsConversions convertToUTF16File
 
 all: obj $(TEST_NAMES)
 #Make the directory for the objects
