@@ -11,16 +11,12 @@ enum {
                                             //code error might appear for malformed strings
   UC_BM_DEST_TOO_SHORT = BITMASK_BIT(2), //This error might appear when converting strings,
                                          //but itself is an error that might happen per character
-  UC_BM_CONVERSION_BIG_ENDIAN = BITMASK_BIT(11), //Set the endianness which is used in conversions
-  UC_BM_AUTODETECT_ENDIANNESS = BITMASK_BIT(22) //If enabled, will lookup endianness
-                                                //at the start of strings, modifying the default
-                                                //if a BOM is detected
+  UC_BM_CONVERSION_BIG_ENDIAN = BITMASK_BIT(11), //Set the desired output endianness
+  UC_BM_CPU_ENDIANNESS_BIG_ENDIAN = BITMASK_BIT(12), //Stores the machine's endianness
 };
 
-#define LITTLE_ENDIAN 0
-#define BIG_ENDIAN 1
-
+/*
 #define SET_BIT 1
 #define UNSET_BIT 0
-
+*/
 #endif

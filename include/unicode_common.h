@@ -1,27 +1,15 @@
 #ifndef UNICODE_COMMON
 #define UNICODE_COMMON
 
+
 #include <stddef.h>
 #include <string.h>
-#include "platform_integration.h"
+#include <stdio.h>
+#include "chars.h"
+#include "uc_bitmask.h"
 #include "mbstate.h"
 #include "codepoints.h"
 
-static inline void
-SwapEndiannessU32(charUTF32_t* src){
-  charUTF32_t auxiliar = *src;
-  *src = (((auxiliar >> 24) & 0x000000ff) | //3th byte to 0th
-      ((auxiliar << 8) & 0x00ff0000) | //1st byte to 2th
-      ((auxiliar >> 8) & 0x0000ff00) | //2th byte to 1st
-      ((auxiliar << 24) & 0xff000000)); //0th byte to 3th
-}
-
-static inline void
-SwapEndiannessU16(charUTF16_t* src){
-  charUTF16_t auxiliar = src[0];
-  src[0] = src[1];
-  src[1] = auxiliar;
-}
 
 #ifndef UNICODE_MACROS
 #define UNICODE_MACROS

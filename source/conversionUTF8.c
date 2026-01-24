@@ -1,5 +1,6 @@
 #include "UTF8.h"
 #include "UTF16.h"
+#include "unicode_common.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -37,8 +38,6 @@ UTF8toUTF16(const charUTF8_t* src, charUTF16_t* dest,
 
       dest[0] = (UTF16_MASK_HIGH_SURROGATE | ((code_point >> 10)));
       dest[1] = (UTF16_MASK_LOW_SURROGATE | ((code_point & TEN_LOWER_BITS)));
-      if(ConversionWithLittleEndian(conver))
-        SwapEndiannessU16(dest);
       break;
   }
   return u8_cp_size;
@@ -74,8 +73,6 @@ UTF8toUTF32(const charUTF8_t* src, charUTF32_t* dest, conversionInfo_t* conver){
       break;
   }
 
-  if(ConversionWithLittleEndian(conver))
-    SwapEndiannessU32(dest);
   return u8_cp_size;
 }
 ////////////////////////////////////////////////////////////////////////////////

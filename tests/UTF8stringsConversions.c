@@ -118,16 +118,16 @@ void testStrings(const charUTF8_t *string, const size_t codepoints,
 
 
 int main(int argc, char **argv){
-  if(argc != 2){
+  if(argc < 2){
     printf("Missing a string to test\n");
     exit(-1);
   }
-  printf("string: %s\n", argv[1]);
 
+  const charUTF8_t *strPT = (const charUTF8_t*)argv[1];
+  printf("string: %s\n", argv[1]);
   conversionInfo_t conver;
   InitializeConversion(&conver, BIG_ENDIAN);
 
-  const charUTF8_t *strPT = (const charUTF8_t*)argv[1];
   mbsize_t utf8bytes;
   size_t numberOfCodepoints=1, numberOfBytes=1, utf16unitsNeeded=1;
   while(*strPT && !ConversionHasError(&conver)){

@@ -32,17 +32,9 @@ UTF16toUTF8(const charUTF16_t* src, charUTF8_t* dest,
     case 2:
       //Don't mind the {}, it is to avoid a C warning
       {}
-      //The surrogate pairs get stored in an auxiliar pair
-      charUTF16_t srcBE[2] = {src[0], src[1]};
-      //All operations are done with big_endian in mind, so, if the 
-      //code point was store in little endian, we convert the auxiliar pair to big endian
-      if(ConversionWithLittleEndian(conver))
-        SwapEndiannessU16(srcBE);
      
-      //UTF-8 doesn't care about endianness, but it goes from the most relevant
-      //bit to the least relevant bit
-      uint32_t code_point = ((srcBE[0] & TEN_LOWER_BITS) << 10) + 
-        (srcBE[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
+      uint32_t code_point = ((src[0] & TEN_LOWER_BITS) << 10) + 
+        (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
       dest[0] = (UTF8_MASK_FOUR_BYTES | ((code_point >> 18) & THREE_LOWER_BITS));
       dest[1] = (UTF8_MASK_ONE_BYTE | ((code_point >> 12) & SIX_LOWER_BITS));
       dest[2] = (UTF8_MASK_ONE_BYTE | ((code_point >> 6) & SIX_LOWER_BITS));
@@ -61,22 +53,11 @@ UTF16toUTF32(const charUTF16_t* src, charUTF32_t* dest, conversionInfo_t* conver
   switch (u16_cp_size) {
     case 1:
       *dest = *src;
-      if(ConversionWithLittleEndian(conver))
-        SwapEndiannessU32(dest);
       break;
     case 2:
-      {}
-      if(!ConversionWithLittleEndian(conver)){
-        *dest = 
-          ((src[0] & TEN_LOWER_BITS) << 10) +
-          (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
-      }else{
-        charUTF16_t srcBE[2] = {src[1], src[0]};
-        *dest = 
-          ((srcBE[0] & TEN_LOWER_BITS) << 10) +
-          (srcBE[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
-        SwapEndiannessU32(dest);
-      }
+      *dest = 
+        ((src[0] & TEN_LOWER_BITS) << 10) +
+        (src[1] & TEN_LOWER_BITS) + UTF16_CODE_POINT_SUBSTRACTION;
       break;
     default:
       SetError(conver,(void*)src);

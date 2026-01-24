@@ -8,33 +8,29 @@ UTF32toUTF8(const charUTF32_t* src, charUTF8_t* dest,
   if(ConversionHasError(conver))
     return 0;
 
-  charUTF32_t srcBE = *src;
-  if(ConversionWithLittleEndian(conver))
-    SwapEndiannessU32(&srcBE);
-
-  mbsize_t u8_cp_length = UTF32mbLength(&srcBE);
+  mbsize_t u8_cp_length = UTF32mbLength(src);
   if(u8_cp_length > utf8bytes)
     u8_cp_length = 0;
 
 
   switch (u8_cp_length) {
     case 1:
-      *dest = srcBE; 
+      *dest = *src; 
       break;
     case 2:
-      dest[0] = (UTF8_MASK_TWO_BYTES | ((srcBE >> 6) & FIVE_LOWER_BITS));
-      dest[1] = (UTF8_MASK_ONE_BYTE | (srcBE & SIX_LOWER_BITS));
+      dest[0] = (UTF8_MASK_TWO_BYTES | ((*src >> 6) & FIVE_LOWER_BITS));
+      dest[1] = (UTF8_MASK_ONE_BYTE | (*src & SIX_LOWER_BITS));
       break;
     case 3:
-      dest[0] = (UTF8_MASK_THREE_BYTES | ((srcBE >> 12) & FOUR_LOWER_BITS));
-      dest[1] = (UTF8_MASK_ONE_BYTE | ((srcBE >> 6) & SIX_LOWER_BITS));
-      dest[2] = (UTF8_MASK_ONE_BYTE | (srcBE & SIX_LOWER_BITS));
+      dest[0] = (UTF8_MASK_THREE_BYTES | ((*src >> 12) & FOUR_LOWER_BITS));
+      dest[1] = (UTF8_MASK_ONE_BYTE | ((*src >> 6) & SIX_LOWER_BITS));
+      dest[2] = (UTF8_MASK_ONE_BYTE | (*src & SIX_LOWER_BITS));
       break;
     case 4:
-      dest[0] = (UTF8_MASK_FOUR_BYTES | ((srcBE >> 18) & THREE_LOWER_BITS));
-      dest[1] = (UTF8_MASK_ONE_BYTE | ((srcBE >> 12) & SIX_LOWER_BITS));
-      dest[2] = (UTF8_MASK_ONE_BYTE | ((srcBE >> 6) & SIX_LOWER_BITS));
-      dest[3] = (UTF8_MASK_ONE_BYTE | (srcBE & SIX_LOWER_BITS));
+      dest[0] = (UTF8_MASK_FOUR_BYTES | ((*src >> 18) & THREE_LOWER_BITS));
+      dest[1] = (UTF8_MASK_ONE_BYTE | ((*src >> 12) & SIX_LOWER_BITS));
+      dest[2] = (UTF8_MASK_ONE_BYTE | ((*src >> 6) & SIX_LOWER_BITS));
+      dest[3] = (UTF8_MASK_ONE_BYTE | (*src & SIX_LOWER_BITS));
       break;
     default:
       SetError(conver, (void*)src);
@@ -50,24 +46,18 @@ UTF32toUTF16(const charUTF32_t* src, charUTF16_t* dest,
   if(ConversionHasError(conver))
     return 0;
 
-  charUTF32_t srcBE = *src;
-  if(ConversionWithLittleEndian(conver))
-    SwapEndiannessU32(&srcBE);
-
-  mbsize_t u16_cp_length = UTF32bytesToUTF16(&srcBE);
+  mbsize_t u16_cp_length = UTF32bytesToUTF16(src);
   if(u16_cp_length > utf16bytes)
     u16_cp_length = 0;
   switch (u16_cp_length){
     case 1:
-      *dest = srcBE;
+      *dest = *src;
       break;
     case 2:
       {}
-      srcBE-= UTF16_CODE_POINT_SUBSTRACTION;
-      dest[0] = ( UTF16_MASK_HIGH_SURROGATE | ((srcBE >> 10) & TEN_LOWER_BITS));
-      dest[1] = ( UTF16_MASK_LOW_SURROGATE | (srcBE & TEN_LOWER_BITS));
-      if(ConversionWithLittleEndian(conver))
-        SwapEndiannessU16(dest);
+      charUTF32_t buffer = *src - UTF16_CODE_POINT_SUBSTRACTION;
+      dest[0] = ( UTF16_MASK_HIGH_SURROGATE | ((buffer >> 10) & TEN_LOWER_BITS));
+      dest[1] = ( UTF16_MASK_LOW_SURROGATE | (buffer & TEN_LOWER_BITS));
       break;
     default:
       SetError(conver, (void*)src);
