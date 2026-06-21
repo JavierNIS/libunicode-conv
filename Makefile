@@ -8,7 +8,7 @@ HEADER_DIR = include/
 OBJ_DIR = objects/
 TEST_DIR = tests/
 COMP = gcc
-CXXFLAGS = -std=c11 -Wall -g -O0 -Winline -pedantic -I$(HEADER_DIR)
+CXXFLAGS = -std=c11 -Wall -g -Og -Winline -pedantic -I$(HEADER_DIR)
 
 #Globals
 SOURCES 		 := $(wildcard $(SRC_DIR)*.c)

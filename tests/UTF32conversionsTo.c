@@ -22,7 +22,7 @@ void TestALLCodePoints(void){
     charUTF16_t utf16[num_utf16_surr];
     charUTF8_t utf8[num_mb+1];
     charUTF32_t utf32_code_point = utf32;
-    printf("Code point: %u\n", code_point);
+    //printf("Code point: %u\n", code_point);
 
     UTF32toUTF8(&utf32, utf8, &conver, num_mb);
     if(ConversionHasError(&conver)){
@@ -30,16 +30,16 @@ void TestALLCodePoints(void){
       exit(-1);
     }
     utf8[CharLength(utf8, &conver)] = 0;
-    printf("UTF8: %s\n", utf8);
+    //printf("UTF8: %s\n", utf8);
 
     UTF32toUTF16(&utf32, utf16, &conver, num_utf16_surr);
     if(ConversionHasError(&conver)){
       printf("Error in conversion from utf32 to utf16\n");
       exit(-1);
     }
-    printf("UTF16: %X %X\n\n UTF16 Bytes: ", utf16[0], utf16[1]);
+    //printf("UTF16: %X %X\n\n UTF16 Bytes: ", utf16[0], utf16[1]);
     write_utf16(stdout, utf16, 2, conver._flags);
-    printf("\n\n");
+    //printf("\n\n");
 
     //Now we go back to UTF-32.
     UTF8toUTF32(utf8, &utf32, &conver);
